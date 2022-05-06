@@ -1,36 +1,25 @@
 const router = require('express').Router()
 const res = require('express/lib/response')
-const Calc = require('../models/Calc')
+const {Calc} = require('../models/Calc')
 const queue = require("../rabbitMQ/queue");
 
 
 router.post('/', async (req, res) => {
-
-  
-
-       
+      
+     
     
-    const { number1, number2, status } = req.body
-    if(!number1){
-        res.status(422).json({error:'Numero é obrigatorio!'})
-    }
-
-    const calc = {
-        number1,
-        number2,
-        status,
-        resultado: number1 + number2
-    }
 
     try {
-        await Calc.create(calc)
-        queue.sendToQueue("Calc", Calc.create(calc));
+        const calc = await Calc.create(req.body)
+        queue.sendToQueue("Calc", calc);
 
         // res.status(201).json({ message: 'Calculo realizado com sucesso ' })
-        res.status(201).json(calc)
+        // res.status(201).json(calc)
+        return res.send({calc});
+
        
     } catch (error) {
-        res.status(500).json({ error: error })
+        return res.status(400).send({error:'Soma não enviada!'})
     }
 
 })

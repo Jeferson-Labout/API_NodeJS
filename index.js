@@ -1,6 +1,10 @@
 const express = require('express')
+var cors = require('cors')
 const { default: mongoose } = require('mongoose')
 const app = express()
+
+
+app.use(cors());
 
 
 app.use(
